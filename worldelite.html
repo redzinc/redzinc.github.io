@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    background-color: black;
+}
+p {
+	font-family: "Courier New", Courier, monospace;
+}
+td {
+	font-family: "Courier New", Courier, monospace;
+}
+</style>
+<script>
+function update()
+{
+	var today = new Date();
+	var h = today.getUTCHours();
+	var m = today.getUTCMinutes();
+	var s = today.getUTCSeconds();
+    
+    {
+        var oTable = document.getElementById('myTable');
+		
+		//calculate offset
+		{
+			var rowLength = oTable.rows.length;
+
+			for (i = 0; i < rowLength; i++)
+			{
+				var thisCell = oTable.rows.item(i).cells;
+
+				var thisResult = thisCell.item(0).innerHTML.split(":");
+				
+				var dayInSeconds = 24 * 60 * 60;
+				var utcInSeconds = (h * 60 * 60) + (m * 60) + s;
+				var rwInSeconds = (parseInt(thisResult[0]) * 60 * 60) + (parseInt(thisResult[1]) * 60);
+
+				var secondsTillReward = rwInSeconds - utcInSeconds;
+				
+				if(secondsTillReward < 0)
+				{
+					secondsTillReward = secondsTillReward + dayInSeconds;
+				}
+				
+				var hourCount = Math.floor((secondsTillReward / 60) / 60);
+				var minuteCount = Math.floor((secondsTillReward - (hourCount * 60 * 60)) / 60);
+				var secondCount = secondsTillReward - ((hourCount * 60 * 60) + (minuteCount * 60));
+				
+				thisCell.item(2).innerHTML = hourCount + ":" + checkTime(minuteCount) + ":" + checkTime(secondCount);				
+			}
+		}
+		
+		//colour cells
+		{
+			var rowLength = oTable.rows.length;
+
+			for (i = 0; i < rowLength; i++)
+			{
+				var thisCell = oTable.rows.item(i).cells;
+
+				var thisResult = thisCell.item(2).innerHTML.split(":");
+				
+				if(parseInt(thisResult[0]) == 0 || (parseInt(thisResult[0]) == 23 && parseInt(thisResult[1]) > 57))
+				{
+                    thisCell.item(0).style.color = "red";
+					thisCell.item(1).style.color = "red";
+                    thisCell.item(2).style.color = "red";
+				}
+				else if(parseInt(thisResult[0]) == 1)
+				{
+                    thisCell.item(0).style.color = "orange";
+					thisCell.item(1).style.color = "orange";
+                    thisCell.item(2).style.color = "orange";
+				}
+				else if(parseInt(thisResult[0]) == 2)
+				{
+                    thisCell.item(0).style.color = "yellow";
+					thisCell.item(1).style.color = "yellow";
+                    thisCell.item(2).style.color = "yellow";
+				}
+				else if(parseInt(thisResult[0]) == 23 || parseInt(thisResult[0]) == 22)
+				{
+                    thisCell.item(0).style.color = "greenyellow";
+					thisCell.item(1).style.color = "greenyellow";
+                    thisCell.item(2).style.color = "greenyellow";
+				}
+				else if(parseInt(thisResult[0]) <= 20 && parseInt(thisResult[0]) >= 13)
+				{
+                    thisCell.item(0).style.color = "skyblue";
+					thisCell.item(1).style.color = "skyblue";
+                    thisCell.item(2).style.color = "skyblue";
+				}
+				else
+				{
+                    thisCell.item(0).style.color = "white";
+					thisCell.item(1).style.color = "white";
+                    thisCell.item(2).style.color = "white";
+				}
+			}
+		}
+
+		//sort
+		{
+			var done = false;
+			
+			while(done == false)
+			{
+				done = true;
+			
+				var rowLength = oTable.rows.length;
+
+				for (i = 0; i < rowLength - 1; i++)
+				{
+					var firstCell = oTable.rows.item(i).cells;
+					var secondCell = oTable.rows.item(i + 1).cells;
+					
+					var firstValues = firstCell.item(2).innerHTML.split(":");
+					var secondValues = secondCell.item(2).innerHTML.split(":");
+                    
+                    var firstHour = parseInt(firstValues[0]);
+                    var secondHour = parseInt(secondValues[0]);
+                    
+                    if(firstHour >= 22)
+                    {
+                        firstHour = firstHour - 24;
+                    }
+                    
+                    if(secondHour >= 22)
+                    {
+                        secondHour = secondHour - 24;
+                    }
+
+					if(firstHour > secondHour || (parseInt(firstValues[0]) == parseInt(secondValues[0]) && parseInt(firstValues[1]) > parseInt(secondValues[1])))
+					{
+						var tempTime = firstCell.item(0).innerHTML;
+						var tempName = firstCell.item(1).innerHTML;
+						var tempOffset = firstCell.item(2).innerHTML;
+						
+						firstCell.item(0).innerHTML = secondCell.item(0).innerHTML;
+						firstCell.item(1).innerHTML = secondCell.item(1).innerHTML;
+						firstCell.item(2).innerHTML = secondCell.item(2).innerHTML;
+
+						secondCell.item(0).innerHTML = tempTime;
+						secondCell.item(1).innerHTML = tempName;
+						secondCell.item(2).innerHTML = tempOffset;
+						
+						done = false;
+					}
+				}
+			}
+		}
+    }
+	
+	{
+        m = checkTime(m);
+        s = checkTime(s);
+        document.getElementById('txt').innerHTML =
+        "Current Time: " + h + ":" + m + ":" + s;
+    }
+    
+    var t = setTimeout(update, 500);
+}
+function checkTime(i) {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
+</script>
+</head>
+
+<body onload="update()">
+
+
+<p>
+<font color="red">WorldElite Reward Times</font><br/>
+</p>
+
+<p>
+<font size="2" color="greenyellow">Cooldown, might lower if asked</font><br/>
+<font size="2" color="red">Critical, do not attack!</font><br/>
+<font size="2" color="orange">Climbing, avoid where possible</font><br/>
+<font size="2" color="yellow">Waiting, attack if needed</font><br/>
+<font size="2" color="white">Inactive, fine to attack</font><br/>
+<font size="2" color="skyblue">Probably Sleeping, fine to attack</font><br/>
+</p>
+
+<p><div id="txt"></div></p>
+
+<table id="myTable">
+	<tr>
+        <td>21:00</td>
+        <td>Justice</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>21:00</td>
+        <td>Shtep</td>
+        <td>uninitialised</td>
+    </tr>
+    <tr>
+        <td>21:00</td>
+        <td>Ravager</td>
+        <td>uninitialised</td>
+    </tr>
+    <tr>
+        <td>21:00</td>
+        <td>Merlin</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>21:00</td>
+        <td>Hello Kitty</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>22:00</td>
+        <td>Diddy</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>22:00</td>
+        <td>Powerboy</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>22:00</td>
+        <td>Xpkt</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>0:00</td>
+        <td>VonDoom</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>1:00</td>
+        <td>Beserker</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>1:00</td>
+        <td>reef</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>1:00</td>
+        <td>Luc</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>2:00</td>
+        <td>DC</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>2:00</td>
+        <td>Tektonik</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>3:00</td>
+        <td>Angel</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>4:00</td>
+        <td>Vinny</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>9:00</td>
+        <td>Un4giv3n</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>10:00</td>
+        <td>Panda</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>Skibo</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>Sally</td>
+        <td>uninitialised</td>
+    </tr>
+    <tr>
+        <td>12:00</td>
+        <td>Green Day</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>Ulrich</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>13:00</td>
+        <td>FortKnox</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>13:00</td>
+        <td>Jeffleev1</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>13:00</td>
+        <td>Kaze</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>13:00</td>
+        <td>Strike</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>13:00</td>
+        <td>Witcher</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>14:00</td>
+        <td>AOF</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>14:00</td>
+        <td>Omni</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>14:00</td>
+        <td>Noctis</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>14:00</td>
+        <td>VeeNo</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>16:00</td>
+        <td>Amos</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>18:00</td>
+        <td>Besiktas</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>18:00</td>
+        <td>Noel9178</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>18:00</td>
+        <td>Wade</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>19:00</td>
+        <td>mo6a</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>19:00</td>
+        <td>Soku</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Cacca</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Krap Nek</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Lolo34</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Luthje</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Psycho</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Rayne</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Slayer</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Thotti</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Fyeth</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>C4rlouche</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Isadora</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>Predaking</td>
+        <td>uninitialised</td>
+    </tr>
+	
+	<tr>
+        <td>22:00</td>
+        <td>RedZinc</td>
+        <td>uninitialised</td>
+    </tr>
+</table>
+
+</body>
+</html>
