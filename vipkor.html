@@ -31,30 +31,38 @@ function update()
 		
 		//calculate offset
 		{
+			var unknownTime = "unknown";
 			var rowLength = oTable.rows.length;
 
 			for (i = 0; i < rowLength; i++)
 			{
 				var thisCell = oTable.rows.item(i).cells;
-
-				var thisResult = thisCell.item(0).innerHTML.split(":");
 				
-				var dayInSeconds = 24 * 60 * 60;
-				var utcInSeconds = (h * 60 * 60) + (m * 60) + s;
-				var rwInSeconds = (parseInt(thisResult[0]) * 60 * 60) + (parseInt(thisResult[1]) * 60);
-
-				var secondsTillReward = rwInSeconds - utcInSeconds;
-				
-				if(secondsTillReward < 0)
+				if(thisCell.item(0).innerHTML == unknownTime)
 				{
-					secondsTillReward = secondsTillReward + dayInSeconds;
+					thisCell.item(3).innerHTML = "99:00:00";
 				}
-				
-				var hourCount = Math.floor((secondsTillReward / 60) / 60);
-				var minuteCount = Math.floor((secondsTillReward - (hourCount * 60 * 60)) / 60);
-				var secondCount = secondsTillReward - ((hourCount * 60 * 60) + (minuteCount * 60));
-				
-				thisCell.item(2).innerHTML = hourCount + ":" + checkTime(minuteCount) + ":" + checkTime(secondCount);				
+				else
+				{
+					var thisResult = thisCell.item(0).innerHTML.split(":");
+					
+					var dayInSeconds = 24 * 60 * 60;
+					var utcInSeconds = (h * 60 * 60) + (m * 60) + s;
+					var rwInSeconds = (parseInt(thisResult[0]) * 60 * 60) + (parseInt(thisResult[1]) * 60);
+
+					var secondsTillReward = rwInSeconds - utcInSeconds;
+					
+					if(secondsTillReward < 0)
+					{
+						secondsTillReward = secondsTillReward + dayInSeconds;
+					}
+					
+					var hourCount = Math.floor((secondsTillReward / 60) / 60);
+					var minuteCount = Math.floor((secondsTillReward - (hourCount * 60 * 60)) / 60);
+					var secondCount = secondsTillReward - ((hourCount * 60 * 60) + (minuteCount * 60));
+					
+					thisCell.item(3).innerHTML = hourCount + ":" + checkTime(minuteCount) + ":" + checkTime(secondCount);				
+				}
 			}
 		}
 		
@@ -66,43 +74,49 @@ function update()
 			{
 				var thisCell = oTable.rows.item(i).cells;
 
-				var thisResult = thisCell.item(2).innerHTML.split(":");
+				var thisResult = thisCell.item(3).innerHTML.split(":");
 				
 				if(parseInt(thisResult[0]) == 0 || (parseInt(thisResult[0]) == 23 && parseInt(thisResult[1]) > 57))
 				{
                     thisCell.item(0).style.color = "red";
 					thisCell.item(1).style.color = "red";
                     thisCell.item(2).style.color = "red";
+					thisCell.item(3).style.color = "red";
 				}
 				else if(parseInt(thisResult[0]) == 1)
 				{
                     thisCell.item(0).style.color = "orange";
 					thisCell.item(1).style.color = "orange";
                     thisCell.item(2).style.color = "orange";
+                    thisCell.item(3).style.color = "orange";
 				}
 				else if(parseInt(thisResult[0]) == 2)
 				{
                     thisCell.item(0).style.color = "yellow";
 					thisCell.item(1).style.color = "yellow";
                     thisCell.item(2).style.color = "yellow";
+                    thisCell.item(3).style.color = "yellow";
 				}
 				else if(parseInt(thisResult[0]) == 23 || parseInt(thisResult[0]) == 22)
 				{
                     thisCell.item(0).style.color = "greenyellow";
 					thisCell.item(1).style.color = "greenyellow";
                     thisCell.item(2).style.color = "greenyellow";
+                    thisCell.item(3).style.color = "greenyellow";
 				}
 				else if(parseInt(thisResult[0]) <= 20 && parseInt(thisResult[0]) >= 13)
 				{
                     thisCell.item(0).style.color = "skyblue";
 					thisCell.item(1).style.color = "skyblue";
                     thisCell.item(2).style.color = "skyblue";
+                    thisCell.item(3).style.color = "skyblue";
 				}
 				else
 				{
                     thisCell.item(0).style.color = "white";
 					thisCell.item(1).style.color = "white";
                     thisCell.item(2).style.color = "white";
+                    thisCell.item(3).style.color = "white";
 				}
 			}
 		}
@@ -122,18 +136,18 @@ function update()
 					var firstCell = oTable.rows.item(i).cells;
 					var secondCell = oTable.rows.item(i + 1).cells;
 					
-					var firstValues = firstCell.item(2).innerHTML.split(":");
-					var secondValues = secondCell.item(2).innerHTML.split(":");
+					var firstValues = firstCell.item(3).innerHTML.split(":");
+					var secondValues = secondCell.item(3).innerHTML.split(":");
                     
                     var firstHour = parseInt(firstValues[0]);
                     var secondHour = parseInt(secondValues[0]);
                     
-                    if(firstHour >= 22)
+                    if(firstHour >= 22 && firstHour != 99)
                     {
                         firstHour = firstHour - 24;
                     }
                     
-                    if(secondHour >= 22)
+                    if(secondHour >= 22 && secondHour != 99)
                     {
                         secondHour = secondHour - 24;
                     }
@@ -141,16 +155,19 @@ function update()
 					if(firstHour > secondHour || (parseInt(firstValues[0]) == parseInt(secondValues[0]) && parseInt(firstValues[1]) > parseInt(secondValues[1])))
 					{
 						var tempTime = firstCell.item(0).innerHTML;
-						var tempName = firstCell.item(1).innerHTML;
-						var tempOffset = firstCell.item(2).innerHTML;
+						var tempGuild = firstCell.item(1).innerHTML;
+						var tempName = firstCell.item(2).innerHTML;
+						var tempOffset = firstCell.item(3).innerHTML;
 						
 						firstCell.item(0).innerHTML = secondCell.item(0).innerHTML;
 						firstCell.item(1).innerHTML = secondCell.item(1).innerHTML;
 						firstCell.item(2).innerHTML = secondCell.item(2).innerHTML;
+						firstCell.item(3).innerHTML = secondCell.item(3).innerHTML;
 
 						secondCell.item(0).innerHTML = tempTime;
-						secondCell.item(1).innerHTML = tempName;
-						secondCell.item(2).innerHTML = tempOffset;
+						secondCell.item(1).innerHTML = tempGuild;
+						secondCell.item(2).innerHTML = tempName;
+						secondCell.item(3).innerHTML = tempOffset;
 						
 						done = false;
 					}
@@ -178,7 +195,7 @@ function checkTime(i) {
 <body onload="update()">
 
 <p>
-<font color="red">Vip.kor Reward Times</font><br/>
+<font color="red">Vip.kor & kizune Reward Times</font><br/>
 </p>
 
 <p>
@@ -195,260 +212,601 @@ function checkTime(i) {
 <table id="myTable">
 	<tr>
         <td>0:00</td>
+        <td>vip.kor</td>
         <td>VonDoom</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>1:00</td>
+        <td>vip.kor</td>
         <td>reef</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>1:00</td>
+        <td>vip.kor</td>
         <td>Luc</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>2:00</td>
+        <td>vip.kor</td>
         <td>DC</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>3:00</td>
+        <td>vip.kor</td>
         <td>Tektonik</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>3:00</td>
+        <td>vip.kor</td>
         <td>Beserker</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>3:00</td>
+        <td>vip.kor</td>
         <td>Angel</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>4:00</td>
+        <td>vip.kor</td>
         <td>Vinny</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>8:00</td>
+        <td>vip.kor</td>
         <td>misery</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>9:00</td>
+        <td>vip.kor</td>
         <td>Un4giv3n</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>10:00</td>
+        <td>vip.kor</td>
         <td>Panda</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>12:00</td>
+        <td>vip.kor</td>
         <td>Skibo</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>12:00</td>
+        <td>vip.kor</td>
         <td>Sally</td>
         <td>uninitialised</td>
     </tr>
     <tr>
         <td>12:00</td>
+        <td>vip.kor</td>
         <td>Green Day</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>12:00</td>
+        <td>vip.kor</td>
         <td>Ulrich</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>13:00</td>
+        <td>vip.kor</td>
         <td>FortKnox</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>13:00</td>
+        <td>vip.kor</td>
         <td>Jeffleev1</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>13:00</td>
+        <td>vip.kor</td>
         <td>Kaze</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>13:00</td>
+        <td>vip.kor</td>
         <td>Strike</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>13:00</td>
+        <td>vip.kor</td>
         <td>Witcher</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>14:00</td>
+        <td>vip.kor</td>
         <td>AOF</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>14:00</td>
+        <td>vip.kor</td>
         <td>Omni</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>14:00</td>
+        <td>vip.kor</td>
         <td>Noctis</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>14:00</td>
+        <td>vip.kor</td>
         <td>VeeNo</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>16:00</td>
+        <td>vip.kor</td>
         <td>Amos</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>18:00</td>
+        <td>vip.kor</td>
         <td>Besiktas</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>18:00</td>
+        <td>vip.kor</td>
         <td>Noel9178</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Wade</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>19:00</td>
+        <td>vip.kor</td>
         <td>mo6a</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>19:00</td>
+        <td>vip.kor</td>
         <td>Soku</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Cacca</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Krap Nek</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Lolo34</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Luthje</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Psycho</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Rayne</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Slayer</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Thotti</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Fyeth</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>C4rlouche</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Isadora</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Predaking</td>
         <td>uninitialised</td>
     </tr>
     <tr>
         <td>20:00</td>
+        <td>vip.kor</td>
         <td>Merlin</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>21:00</td>
+        <td>vip.kor</td>
         <td>Justice</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>21:00</td>
+        <td>vip.kor</td>
         <td>Shtep</td>
         <td>uninitialised</td>
     </tr>
     <tr>
         <td>21:00</td>
+        <td>vip.kor</td>
         <td>Ravager</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>21:00</td>
+        <td>vip.kor</td>
         <td>Hello Kitty</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>22:00</td>
+        <td>vip.kor</td>
         <td>Diddy</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>22:00</td>
+        <td>vip.kor</td>
         <td>Powerboy</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>22:00</td>
+        <td>vip.kor</td>
         <td>Xpkt</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>vip.kor</td>
+        <td>Raven</td>
         <td>uninitialised</td>
     </tr>
 	
 	<tr>
-        <td>22:00</td>
+        <td>23:00</td>
+        <td>vip.kor</td>
         <td>RedZinc</td>
         <td>uninitialised</td>
     </tr>
+	
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>momota</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>8:00</td>
+        <td>kizune</td>
+        <td>Tack</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>Bull</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>13:00</td>
+        <td>kizune</td>
+        <td>kimberly</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>Snow Diabolos</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>kanhiro</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>10:00</td>
+        <td>kizune</td>
+        <td>rb_dai</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>Gaja芋</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>11:00</td>
+        <td>kizune</td>
+        <td>Tao</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:30</td>
+        <td>kizune</td>
+        <td>清原和博</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>七star</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>9:00</td>
+        <td>kizune</td>
+        <td>tnテン</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>ひろき</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>暁hero</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>絆の帝王</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>フミ</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>もずく</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>くま39</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>よし</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>kizune</td>
+        <td>やめてっ！</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>kizune</td>
+        <td>はたけ</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>14:30</td>
+        <td>kizune</td>
+        <td>L</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>14:00</td>
+        <td>kizune</td>
+        <td>Monmon</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>tatara</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>14:00</td>
+        <td>kizune</td>
+        <td>No.kei</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>Slacky</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>kizune</td>
+        <td>amara~</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>PLAYA-G</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>kizune</td>
+        <td>uooono</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>0:00</td>13
+        <td>kizune</td>
+        <td>misery</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>GingerAle</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>kizune</td>
+        <td>Tencha</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>onion</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>kizune</td>
+        <td>monotan</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>ZERO</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>kiss2600</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>LUCY</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>takezo</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>Hardwell</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>aremoa</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>msms</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>kazu</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>22:00</td>
+        <td>kizune</td>
+        <td>Nops</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>cafedeldia</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>MANDAM</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>12:00</td>
+        <td>kizune</td>
+        <td>YOSSAN</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>kizune</td>
+        <td>DJ-K</td>
+        <td>uninitialised</td>
+    </tr>
+	
 </table>
 
 </body>
