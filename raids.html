@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+<style>
+font {
+	size:-webkit-text-size-adjust: none;
+}
+body {
+    background-color: black;
+	font-size: -webkit-text-size-adjust: none;
+}
+p {
+	font-family: "Courier New", Courier, monospace;
+}
+td {
+	font-family: "Courier New", Courier, monospace;
+	font-size: -webkit-text-size-adjust: none;
+}
+</style>
+<script>
+function update()
+{
+	var lookupTable = 
+	{
+		"adm": "heroes/admiral.jpg",
+		"ap": "heroes/ancient_protector.jpg",
+		"as": "heroes/arcane_sapper.jpg",
+		"bw": "heroes/bear_warrior.jpg",
+		"bq": "heroes/bounty_queen.jpg",
+		"br": "heroes/brute.jpg",
+		"cf": "heroes/cat_fencer.jpg",
+		"chap": "heroes/chaplin.jpg",
+		"chem": "heroes/chemist.jpg",
+		"cleric": "heroes/cleric.jpg",
+		"cw": "heroes/cloud_walker.jpg",
+		"cmdr": "heroes/commander.jpg",
+		"cmdo": "heroes/commando.jpg",
+		"ca": "heroes/corrupted_angel.jpg",
+		"ck": "heroes/crossed_knight.jpg",
+		"db": "heroes/death_bringer.jpg",
+		"dm": "heroes/death_mage.jpg",
+		"dg": "heroes/deathgore.jpg",
+		"dk": "heroes/deathknight.jpg",
+		"da": "heroes/demon_assassin.jpg",
+		"dv": "heroes/depths_voice.jpg",
+		"dl": "heroes/desert_lycan.jpg",
+		"dev": "heroes/devastator.jpg",
+		"dib": "heroes/disease_bringer.jpg",
+		"divk": "heroes/divine_knight.jpg",
+		"dope": "heroes/dope_king.jpg",
+		"panda": "heroes/druken_master.jpg",
+		"duelw": "heroes/duel_wield.jpg",
+		"duk": "heroes/dungeon_keeper.jpg",
+		"dw": "heroes/dwarf_warrior.jpg",
+		"eg": "heroes/elder_giant.jpg",
+		"eb": "heroes/ember_blade.jpg",
+		"ember": "heroes/emberstar.jpg",
+		"enchant": "heroes/enchantress.jpg",
+		"evilb": "heroes/evil_blood.jpg",
+		"er": "heroes/evil_rabbit.jpg",
+		"fd": "heroes/fallen_dominion.jpg",
+		"ferry": "heroes/ferryman.jpg",
+		"fs": "heroes/fiend_slayer.jpg",
+		"ff": "heroes/forest_fairy.jpg",
+		"fg": "heroes/forest_guardian.jpg",
+		"fm": "heroes/frost_mage.jpg",
+		"gk": "heroes/ghost_knight.jpg",
+		"gm": "heroes/ghost_musician.jpg",
+		"griff": "heroes/griffin.jpg",
+		"hn": "heroes/hidden_needle.jpg",
+		"im": "heroes/ice_mage.jpg",
+		"is": "heroes/ice_spirit.jpg",
+		"ie": "heroes/imperial_executioner.jpg",
+		"inf": "heroes/inferno.jpg",
+		"id": "heroes/iron_dragon.jpg",
+		"ih": "heroes/iron_hoof.jpg",
+		"lb": "heroes/lightbringer.jpg",
+		"le": "heroes/lightning_elemental.jpg",
+		"lm": "heroes/lightning_master.jpg",
+		"lg": "heroes/lunar_guardian.jpg",
+		"mach": "heroes/machinist.jpg",
+		"mani": "heroes/manipulator.jpg",
+		"mm": "heroes/master_mage.jpg",
+		"md": "heroes/mechanical_destroyer.jpg",
+		"mount": "heroes/mountain.jpg",
+		"musk": "heroes/musketeer.jpg",
+		"mystic": "heroes/mystic.jpg",
+		"ns": "heroes/nature_storm.jpg",
+		"na": "heroes/ninja_assassin.jpg",
+		"nymph": "heroes/nymph_of_sea.jpg",
+		"oc": "heroes/old_curse.jpg",
+		"ooze": "heroes/ooze.jpg",
+		"phoenix": "heroes/phoenix.jpg",
+		"pilot": "heroes/pilot.jpg",
+		"po": "heroes/poisoned_one.jpg",
+		"pk": "heroes/professional_killer.jpg",
+		"ps": "heroes/psychic_sword.jpg",
+		"psycho": "heroes/psychopath.jpg",
+		"pm": "heroes/puppet_master.jpg",
+		"qoc": "heroes/queen_of_curse.jpg",
+		"qon": "heroes/queen_of_nature.jpg",
+		"qow": "heroes/queen_of_waith.jpg",
+		"rifle": "heroes/rifleman.jpg",
+		"rf": "heroes/rose_fencer.jpg",
+		"so": "heroes/savage_one.jpg",
+		"sq": "heroes/scorpion_queen.jpg",
+		"sw": "heroes/serpent_warlock.jpg",
+		"ss": "heroes/shadow_shaman.jpg",
+		"sl": "heroes/shadowleaf.jpg",
+		"sk": "heroes/shallows_keeper.jpg",
+		"sil": "heroes/silencer.jpg",
+		"smage": "heroes/skeleton_mage.jpg",
+		"sniper": "heroes/sniper.jpg",
+		"sorc": "heroes/sorceress.jpg",
+		"sh": "heroes/soul_hunter.jpg",
+		"strom": "heroes/stormlord.jpg",
+		"succ": "heroes/succubus.jpg",
+		"sm": "heroes/swordmaster.jpg",
+		"tp": "heroes/tarot_prophet.jpg",
+		"terran": "heroes/terran_swordsman.jpg",
+		"tb": "heroes/thunder_beast.jpg",
+		"tt": "heroes/time_traveller.jpg",
+		"trollp": "heroes/troll_princess.jpg",
+		"tf": "heroes/turtle_fighter.jpg",
+		"ts": "heroes/tusked_storm.jpg",
+		"uc": "heroes/unsullied_champion.jpg",
+		"vw": "heroes/vanguard_warrior.jpg",
+		"vs": "heroes/vengeance_spirit.jpg",
+		"ws": "heroes/wandering_spearman.jpg",
+		"wc": "heroes/war_chief.jpg",
+		"ww": "heroes/warewolf.jpg",
+		"wmonk": "heroes/warrior_monk.jpg",
+		"windm": "heroes/wind_master.jpg",
+		"wp": "heroes/wind_priest.jpg",
+		"witch": "heroes/witch.jpg",
+		"wd": "heroes/wizard_doctor.jpg",
+	}
+    
+    {
+        var oTable = document.getElementById('myTable');
+		
+		//calculate offset
+		{
+			var rowLength = oTable.rows.length;
+
+			for (i = 0; i < rowLength; i++)
+			{
+				var thisCell = oTable.rows.item(i).cells;
+				
+				if(oTable.rows.item(i).id != "title" && oTable.rows.item(i).id != "footer")
+				{
+					var columnLength = thisCell.length;
+
+					for(column = 0; column < columnLength; column++)
+					{
+						var img = document.createElement('img');
+						
+						img.src = lookupTable[thisCell.item(column).id];
+						img.width = 50;
+						img.height = 50;
+						img.border = 5;
+
+						thisCell.item(column).appendChild(img);
+					}
+				}
+			}
+		}
+	}
+}
+</script>
+</head>
+
+<body onload="update()">
+
+<p>
+<font color="red">Raid Setups</font><br/>
+</p>
+
+<table id="myTable">
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 19: Demon Assassin<font></td>
+    </tr>
+    <tr>
+        <td id=dw></td>
+        <td id=gk></td>
+        <td id=tt></td>
+        <td id=tp></td>
+        <td id=tb></td>
+    </tr>	
+    <tr>
+        <td id=dw></td>
+        <td id=sh></td>
+        <td id=ie></td>
+        <td id=tt></td>
+        <td id=tp></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 18: Nymph of Sea<font></td>
+    </tr>
+    <tr>
+        <td id=na></td>
+        <td id=chem></td>
+        <td id=ie></td>
+        <td id=tt></td>
+        <td id=tp></td>
+    </tr>	
+    <tr>
+        <td id=cw></td>
+        <td id=na></td>
+        <td id=dm></td>
+        <td id=chem></td>
+        <td id=sw></td>
+    </tr>	
+    <tr>
+        <td id=sh></td>
+        <td id=fd></td>
+        <td id=cmdr></td>
+        <td id=cw></td>
+        <td id=tp></td>
+    </tr>	
+    <tr>
+        <td id=sh></td>
+        <td id=dm></td>
+        <td id=ie></td>
+        <td id=sorc></td>
+        <td id=tp></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 17: Turtle<font></td>
+    </tr>
+    <tr>
+        <td id=er></td>
+        <td id=dm></td>
+        <td id=da></td>
+        <td id=ie></td>
+        <td id=tt></td>
+    </tr>	
+    <tr>
+        <td id=er></td>
+        <td id=da></td>
+        <td id=tt></td>
+        <td id=sorc></td>
+        <td id=tb></td>
+    </tr>	
+    <tr>
+        <td id=er></td>
+        <td id=dm></td>
+        <td id=ie></td>
+        <td id=sil></td>
+        <td id=sorc></td>
+    </tr>	
+    <tr>
+        <td id=dm></td>
+        <td id=da></td>
+        <td id=gm></td>
+        <td id=ie></td>
+        <td id=sorc></td>
+    </tr>	
+    <tr>
+        <td id=dm></td>
+        <td id=ie></td>
+        <td id=sil></td>
+        <td id=mani></td>
+        <td id=sorc></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 16: Dwarf Warrior<font></td>
+    </tr>
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 15: Stormlord<font></td>
+    </tr>
+    <tr>
+        <td id=fd></td>
+        <td id=cw></td>
+        <td id=divk></td>
+        <td id=tp></td>
+        <td id=na></td>
+    </tr>	
+    <tr>
+        <td id=ie></td>
+        <td id=dm></td>
+        <td id=fd></td>
+        <td id=na></td>
+        <td id=tp></td>
+    </tr>	
+    <tr>
+        <td id=fd></td>
+        <td id=cw></td>
+        <td id=na></td>
+        <td id=dm></td>
+        <td id=tt></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 14: Dragon<font></td>
+    </tr>
+    <tr>
+        <td id=fd></td>
+        <td id=na></td>
+        <td id=chem></td>
+        <td id=tp></td>
+        <td id=er></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 13: Swamp<font></td>
+    </tr>
+    <tr>
+        <td id=sm></td>
+        <td id=dm></td>
+        <td id=divk></td>
+        <td id=tp></td>
+        <td id=na></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 12: Admiral<font></td>
+    </tr>
+    <tr>
+        <td id=so></td>
+        <td id=na></td>
+        <td id=tp></td>
+        <td id=er></td>
+        <td id=ww></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 11: Mystic<font></td>
+    </tr>
+    <tr>
+        <td id=rifle></td>
+        <td id=na></td>
+        <td id=tp></td>
+        <td id=tt></td>
+        <td id=sw></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 10: Wandering Spearman<font></td>
+    </tr>
+    <tr>
+        <td id=fd></td>
+        <td id=na></td>
+        <td id=tp></td>
+        <td id=tb></td>
+        <td id=divk></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 9: Ancient Tree<font></td>
+    </tr>
+    <tr>
+        <td id=na></td>
+        <td id=tp></td>
+        <td id=divk></td>
+        <td id=ww></td>
+        <td id=bq></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 8: Fallen Dominion<font></td>
+    </tr>
+    <tr>
+        <td id=na></td>
+        <td id=tp></td>
+        <td id=er></td>
+        <td id=tb></td>
+        <td id=divk></td>
+    </tr>	
+	<tr id="footer">
+        <td colspan=5><font color="black">--------------------------------------<font></td>
+    </tr>
+	<tr id="title">
+        <td colspan=5><font color="greenyellow">Chapter 7: Silencer<font></td>
+    </tr>
+    <tr>
+        <td id=na></td>
+        <td id=tp></td>
+        <td id=er></td>
+        <td id=tb></td>
+        <td id=divk></td>
+    </tr>	
+</table>
+
+</body>
+</html>
