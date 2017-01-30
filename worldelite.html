@@ -31,37 +31,45 @@ function update()
 		
 		//calculate offset
 		{
+			var unknownTime = "unknown";
 			var rowLength = oTable.rows.length;
 
 			for (i = 0; i < rowLength; i++)
 			{
 				var thisCell = oTable.rows.item(i).cells;
-
-				var thisResult = thisCell.item(0).innerHTML.split(":");
 				
-				var dayInSeconds = 24 * 60 * 60;
-				var utcInSeconds = (h * 60 * 60) + (m * 60) + s;
-				var rwInSeconds = (parseInt(thisResult[0]) * 60 * 60) + (parseInt(thisResult[1]) * 60);
-
-				var secondsTillReward = rwInSeconds - utcInSeconds;
-				
-				if(secondsTillReward < 0)
+				if(thisCell.item(0).innerHTML == unknownTime)
 				{
-					secondsTillReward = secondsTillReward + dayInSeconds;
+					thisCell.item(3).innerHTML = "99:00:00";
 				}
-				
-				var hourCount = Math.floor((secondsTillReward / 60) / 60);
-				var minuteCount = Math.floor((secondsTillReward - (hourCount * 60 * 60)) / 60);
-				var secondCount = secondsTillReward - ((hourCount * 60 * 60) + (minuteCount * 60));
-				
-				thisCell.item(3).innerHTML = hourCount + ":" + checkTime(minuteCount) + ":" + checkTime(secondCount);				
+				else
+				{
+					var thisResult = thisCell.item(0).innerHTML.split(":");
+					
+					var dayInSeconds = 24 * 60 * 60;
+					var utcInSeconds = (h * 60 * 60) + (m * 60) + s;
+					var rwInSeconds = (parseInt(thisResult[0]) * 60 * 60) + (parseInt(thisResult[1]) * 60);
+
+					var secondsTillReward = rwInSeconds - utcInSeconds;
+					
+					if(secondsTillReward < 0)
+					{
+						secondsTillReward = secondsTillReward + dayInSeconds;
+					}
+					
+					var hourCount = Math.floor((secondsTillReward / 60) / 60);
+					var minuteCount = Math.floor((secondsTillReward - (hourCount * 60 * 60)) / 60);
+					var secondCount = secondsTillReward - ((hourCount * 60 * 60) + (minuteCount * 60));
+					
+					thisCell.item(3).innerHTML = hourCount + ":" + checkTime(minuteCount) + ":" + checkTime(secondCount);				
+				}
 			}
 		}
 		
 		//colour cells
 		{
 			var rowLength = oTable.rows.length;
-			var enemyTag = "[]";
+			var enemyTag = "[₳]";
 
 			for (i = 0; i < rowLength; i++)
 			{
@@ -71,10 +79,10 @@ function update()
 				
 				if(thisCell.item(1).innerHTML == enemyTag)
 				{
-                    thisCell.item(0).style.color = "plum";
-					thisCell.item(1).style.color = "plum";
-                    thisCell.item(2).style.color = "plum";
-					thisCell.item(3).style.color = "plum";
+                    thisCell.item(0).style.color = "greenyellow";
+					thisCell.item(1).style.color = "greenyellow";
+                    thisCell.item(2).style.color = "greenyellow";
+					thisCell.item(3).style.color = "greenyellow";
 				}
 				else if(parseInt(thisResult[0]) == 0 || (parseInt(thisResult[0]) == 23 && parseInt(thisResult[1]) > 57))
 				{
@@ -96,20 +104,6 @@ function update()
 					thisCell.item(1).style.color = "yellow";
                     thisCell.item(2).style.color = "yellow";
                     thisCell.item(3).style.color = "yellow";
-				}
-				else if(parseInt(thisResult[0]) == 23 || parseInt(thisResult[0]) == 22)
-				{
-                    thisCell.item(0).style.color = "greenyellow";
-					thisCell.item(1).style.color = "greenyellow";
-                    thisCell.item(2).style.color = "greenyellow";
-                    thisCell.item(3).style.color = "greenyellow";
-				}
-				else if(parseInt(thisResult[0]) <= 20 && parseInt(thisResult[0]) >= 13)
-				{
-                    thisCell.item(0).style.color = "skyblue";
-					thisCell.item(1).style.color = "skyblue";
-                    thisCell.item(2).style.color = "skyblue";
-                    thisCell.item(3).style.color = "skyblue";
 				}
 				else
 				{
@@ -140,14 +134,17 @@ function update()
 					var secondValues = secondCell.item(3).innerHTML.split(":");
                     
                     var firstHour = parseInt(firstValues[0]);
+                    var firstMinute = parseInt(firstValues[1]);
+
                     var secondHour = parseInt(secondValues[0]);
+                    var secondMinute = parseInt(secondValues[1]);
                     
-                    if(firstHour >= 22)
+                    if(firstHour == 23 && firstMinute > 57)
                     {
                         firstHour = firstHour - 24;
                     }
                     
-                    if(secondHour >= 22)
+                    if(secondHour == 23 && secondMinute > 57)
                     {
                         secondHour = secondHour - 24;
                     }
@@ -200,13 +197,11 @@ function checkTime(i) {
 </p>
 
 <p>
-<font size="2" color="greenyellow">Cooldown, might lower if asked</font><br/>
 <font size="2" color="red">Critical, do not attack!</font><br/>
 <font size="2" color="orange">Climbing, avoid where possible</font><br/>
 <font size="2" color="yellow">Waiting, attack if needed</font><br/>
 <font size="2" color="white">Inactive, fine to attack</font><br/>
-<font size="2" color="skyblue">Probably Sleeping, fine to attack</font><br/>
-<font size="2" color="plum">Enemy! Attack, Attack, Attack!</font><br/>
+<font size="2" color="greenyellow">Enemy! Attack, Attack, Attack!</font><br/>
 </p>
 
 <p><div id="txt"></div></p>
@@ -221,25 +216,13 @@ function checkTime(i) {
     <tr>
         <td>1:00</td>
         <td>[W]</td>
-        <td>psycho</td>
+        <td>Psycho</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>2:00</td>
         <td>[W]</td>
-        <td>lovebug</td>
-        <td>uninitialised</td>
-    </tr>
-    <tr>
-        <td>5:00</td>
-        <td>[W]</td>
-        <td>Caution</td>
-        <td>uninitialised</td>
-    </tr>
-    <tr>
-        <td>5:00</td>
-        <td>[W]</td>
-        <td>Strybie</td>
+        <td>LoveBug</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
@@ -251,31 +234,7 @@ function checkTime(i) {
 	<tr>
         <td>8:00</td>
         <td>[W]</td>
-        <td>Ak Chol</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>8:00</td>
-        <td>[W]</td>
         <td>Oyabun</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>14:00</td>
-        <td>[W]</td>
-        <td>Right</td>
-        <td>uninitialised</td>
-    </tr>
-    <tr>
-        <td>10:00</td>
-        <td>[W]</td>
-        <td>Vanilla</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>11:00</td>
-        <td>[W]</td>
-        <td>Azeroth</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
@@ -284,40 +243,16 @@ function checkTime(i) {
         <td>SJ</td>
         <td>uninitialised</td>
     </tr>
-	<tr>
-        <td>11:00</td>
-        <td>[W]</td>
-        <td>Blackswan</td>
-        <td>uninitialised</td>
-    </tr>
     <tr>
         <td>12:00</td>
         <td>[W]</td>
-        <td>Duck or</td>
+        <td>Squid or</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
         <td>12:00</td>
         <td>[W]</td>
         <td>Ares</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>13:00</td>
-        <td>[W]</td>
-        <td>Iori</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>13:00</td>
-        <td>[W]</td>
-        <td>Maxcool</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>13:00</td>
-        <td>[W]</td>
-        <td>nuxxx</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
@@ -335,7 +270,7 @@ function checkTime(i) {
 	<tr>
         <td>14:00</td>
         <td>[W]</td>
-        <td>Or Tel</td>
+        <td>or Tel</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
@@ -371,7 +306,7 @@ function checkTime(i) {
 	<tr>
         <td>14:30</td>
         <td>[W]</td>
-        <td>Carlsberg</td>
+        <td>CalsBerg</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
@@ -389,7 +324,7 @@ function checkTime(i) {
 	<tr>
         <td>15:00</td>
         <td>[W]</td>
-        <td>Kinoey</td>
+        <td>~kinoey</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
@@ -431,7 +366,7 @@ function checkTime(i) {
 	<tr>
         <td>18:00</td>
         <td>[W]</td>
-        <td>samedy</td>
+        <td>Samedy</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
@@ -449,25 +384,13 @@ function checkTime(i) {
 	<tr>
         <td>19:00</td>
         <td>[W]</td>
-        <td>pitti</td>
+        <td>Ozzy34</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
-        <td>19:00</td>
+        <td>11:00</td>
         <td>[W]</td>
-        <td>ozzy34</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>19:00</td>
-        <td>[W]</td>
-        <td>Akayus</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>20:00</td>
-        <td>[W]</td>
-        <td>Max</td>
+        <td>Azeroth</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
@@ -503,34 +426,71 @@ function checkTime(i) {
 	<tr>
         <td>18:00</td>
         <td>[W]</td>
-        <td>Zhang</td>
+        <td>alker</td>
         <td>uninitialised</td>
     </tr>
 	<tr>
-        <td>17:00</td>
+        <td>11:00</td>
         <td>[W]</td>
-        <td>Truff</td>
+        <td>Blackswan</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>[W]</td>
+        <td>CdX_SnoW</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>11:00</td>
+        <td>[W]</td>
+        <td>Dylan</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>[W]</td>
+        <td>JuddBao</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>14:00</td>
+        <td>[W]</td>
+        <td>andy.wu</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>[W]</td>
+        <td>Bacco</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>unknown</td>
+        <td>[W]</td>
+        <td>Zell</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>20:00</td>
+        <td>[W]</td>
+        <td>luisian</td>
+        <td>uninitialised</td>
+    </tr>
+	<tr>
+        <td>0:00</td>
+        <td>[W]</td>
+        <td>Princess</td>
         <td>uninitialised</td>
     </tr>
 
 	<tr>
-        <td>22:00</td>
-        <td>[]</td>
-        <td>Nunoless</td>
+        <td>4:00</td>
+        <td>[₳]</td>
+        <td>TheLastJedi</td>
         <td>uninitialised</td>
     </tr>
-	<tr>
-        <td>13:00</td>
-        <td>[]</td>
-        <td>zeroless</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>15:00</td>
-        <td>[]</td>
-        <td>thiendi</td>
-        <td>uninitialised</td>
-    </tr>
+
 	
 </table>
 
