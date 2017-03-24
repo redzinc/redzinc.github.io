@@ -25,6 +25,12 @@ function update()
 	var h = today.getUTCHours();
 	var m = today.getUTCMinutes();
 	var s = today.getUTCSeconds();
+	
+	var countdownColumn = 0;
+	var guildColumn = 1;
+	var nameColumn = 2;
+	var languageColumn = 3;
+	var timeColumn = 4;
     
     {
         var oTable = document.getElementById('myTable');
@@ -38,13 +44,13 @@ function update()
 			{
 				var thisCell = oTable.rows.item(i).cells;
 				
-				if(thisCell.item(0).innerHTML == unknownTime)
+				if(thisCell.item(timeColumn).innerHTML == unknownTime)
 				{
-					thisCell.item(3).innerHTML = "99:00:00";
+					thisCell.item(countdownColumn).innerHTML = "99:00:00";
 				}
 				else
 				{
-					var thisResult = thisCell.item(0).innerHTML.split(":");
+					var thisResult = thisCell.item(timeColumn).innerHTML.split(":");
 					
 					var dayInSeconds = 24 * 60 * 60;
 					var utcInSeconds = (h * 60 * 60) + (m * 60) + s;
@@ -61,7 +67,7 @@ function update()
 					var minuteCount = Math.floor((secondsTillReward - (hourCount * 60 * 60)) / 60);
 					var secondCount = secondsTillReward - ((hourCount * 60 * 60) + (minuteCount * 60));
 					
-					thisCell.item(3).innerHTML = hourCount + ":" + checkTime(minuteCount) + ":" + checkTime(secondCount);				
+					thisCell.item(countdownColumn).innerHTML = hourCount + ":" + checkTime(minuteCount) + ":" + checkTime(secondCount);				
 				}
 			}
 		}
@@ -74,35 +80,39 @@ function update()
 			{
 				var thisCell = oTable.rows.item(i).cells;
 
-				var thisResult = thisCell.item(3).innerHTML.split(":");
+				var thisResult = thisCell.item(countdownColumn).innerHTML.split(":");
 				
 				if(parseInt(thisResult[0]) == 0 || (parseInt(thisResult[0]) == 23 && parseInt(thisResult[1]) > 57))
 				{
-                    thisCell.item(0).style.color = "red";
-					thisCell.item(1).style.color = "red";
-                    thisCell.item(2).style.color = "red";
-					thisCell.item(3).style.color = "red";
+                    thisCell.item(timeColumn).style.color = "black";
+					thisCell.item(guildColumn).style.color = "red";
+                    thisCell.item(nameColumn).style.color = "red";
+					thisCell.item(countdownColumn).style.color = "red";
+					thisCell.item(languageColumn).style.color = "red";
 				}
 				else if(parseInt(thisResult[0]) == 1)
 				{
-                    thisCell.item(0).style.color = "orange";
-					thisCell.item(1).style.color = "orange";
-                    thisCell.item(2).style.color = "orange";
-                    thisCell.item(3).style.color = "orange";
+                    thisCell.item(timeColumn).style.color = "black";
+					thisCell.item(guildColumn).style.color = "orange";
+                    thisCell.item(nameColumn).style.color = "orange";
+                    thisCell.item(countdownColumn).style.color = "orange";
+					thisCell.item(languageColumn).style.color = "orange";
 				}
 				else if(parseInt(thisResult[0]) == 2)
 				{
-                    thisCell.item(0).style.color = "yellow";
-					thisCell.item(1).style.color = "yellow";
-                    thisCell.item(2).style.color = "yellow";
-                    thisCell.item(3).style.color = "yellow";
+                    thisCell.item(timeColumn).style.color = "black";
+					thisCell.item(guildColumn).style.color = "yellow";
+                    thisCell.item(nameColumn).style.color = "yellow";
+                    thisCell.item(countdownColumn).style.color = "yellow";
+					thisCell.item(languageColumn).style.color = "yellow";
 				}
 				else
 				{
-                    thisCell.item(0).style.color = "white";
-					thisCell.item(1).style.color = "white";
-                    thisCell.item(2).style.color = "white";
-                    thisCell.item(3).style.color = "white";
+                    thisCell.item(timeColumn).style.color = "black";
+					thisCell.item(guildColumn).style.color = "white";
+                    thisCell.item(nameColumn).style.color = "white";
+                    thisCell.item(countdownColumn).style.color = "white";
+					thisCell.item(languageColumn).style.color = "white";
 				}
 			}
 		}
@@ -122,8 +132,8 @@ function update()
 					var firstCell = oTable.rows.item(i).cells;
 					var secondCell = oTable.rows.item(i + 1).cells;
 					
-					var firstValues = firstCell.item(3).innerHTML.split(":");
-					var secondValues = secondCell.item(3).innerHTML.split(":");
+					var firstValues = firstCell.item(countdownColumn).innerHTML.split(":");
+					var secondValues = secondCell.item(countdownColumn).innerHTML.split(":");
                     
                     var firstHour = parseInt(firstValues[0]);
                     var firstMinute = parseInt(firstValues[1]);
@@ -143,20 +153,23 @@ function update()
 
 					if(firstHour > secondHour || (parseInt(firstValues[0]) == parseInt(secondValues[0]) && parseInt(firstValues[1]) > parseInt(secondValues[1])))
 					{
-						var tempTime = firstCell.item(0).innerHTML;
-						var tempGuild = firstCell.item(1).innerHTML;
-						var tempName = firstCell.item(2).innerHTML;
-						var tempOffset = firstCell.item(3).innerHTML;
+						var tempTime = firstCell.item(timeColumn).innerHTML;
+						var tempGuild = firstCell.item(guildColumn).innerHTML;
+						var tempName = firstCell.item(nameColumn).innerHTML;
+						var tempOffset = firstCell.item(countdownColumn).innerHTML;
+						var tempLanguage = firstCell.item(languageColumn).innerHTML;
 						
-						firstCell.item(0).innerHTML = secondCell.item(0).innerHTML;
-						firstCell.item(1).innerHTML = secondCell.item(1).innerHTML;
-						firstCell.item(2).innerHTML = secondCell.item(2).innerHTML;
-						firstCell.item(3).innerHTML = secondCell.item(3).innerHTML;
+						firstCell.item(timeColumn).innerHTML = secondCell.item(timeColumn).innerHTML;
+						firstCell.item(guildColumn).innerHTML = secondCell.item(guildColumn).innerHTML;
+						firstCell.item(nameColumn).innerHTML = secondCell.item(nameColumn).innerHTML;
+						firstCell.item(countdownColumn).innerHTML = secondCell.item(countdownColumn).innerHTML;
+						firstCell.item(languageColumn).innerHTML = secondCell.item(languageColumn).innerHTML;
 
-						secondCell.item(0).innerHTML = tempTime;
-						secondCell.item(1).innerHTML = tempGuild;
-						secondCell.item(2).innerHTML = tempName;
-						secondCell.item(3).innerHTML = tempOffset;
+						secondCell.item(timeColumn).innerHTML = tempTime;
+						secondCell.item(guildColumn).innerHTML = tempGuild;
+						secondCell.item(nameColumn).innerHTML = tempName;
+						secondCell.item(countdownColumn).innerHTML = tempOffset;
+						secondCell.item(languageColumn).innerHTML = tempLanguage;
 						
 						done = false;
 					}
@@ -199,269 +212,384 @@ function checkTime(i) {
 
 <table id="myTable">
 	<tr>
-        <td>23:00</td>
-        <td>[KOR]</td>
-        <td>HelloWorld</td>
         <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Killer.pH</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>KOR.com™</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Y</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Pacifist</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>castela</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Madeiv</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
         <td>[KOR]</td>
         <td>Philis</td>
-        <td>uninitialised</td>
+        <td>English/Korean</td>
+        <td>7:15</td>
     </tr>
 	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>TOP</td>
         <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>paranoi</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Sso</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>OSD7777</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>LEE</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Anas</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>austin</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Too</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>15:00</td>
-        <td>[KOR]</td>
-        <td>KOP</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>25King</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>zki</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Capt</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>SiLENCER</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Best</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>pleta</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Yeongho</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Monkey</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Kitfox</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>TeeJay</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>=k.o.t=</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Rasta</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>ice ice</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>iFame</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Hoper</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>Johny</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
-        <td>[KOR]</td>
-        <td>M e a</td>
-        <td>uninitialised</td>
-    </tr>
-	<tr>
-        <td>unknown</td>
         <td>[KOR]</td>
         <td>GB</td>
-        <td>uninitialised</td>
+        <td>English/Korean</td>
+        <td>7:15</td>
     </tr>
 	<tr>
-        <td>unknown</td>
+        <td>uninitialised</td>
         <td>[KOR]</td>
-        <td>Lia</td>
-        <td>uninitialised</td>
+        <td>Y</td>
+        <td>Korean</td>
+        <td>8:00</td>
     </tr>
 	<tr>
-        <td>unknown</td>
+        <td>uninitialised</td>
         <td>[KOR]</td>
-        <td>Blue</td>
-        <td>uninitialised</td>
+        <td>TOP</td>
+        <td>Korean</td>
+        <td>9:00</td>
     </tr>
 	<tr>
-        <td>unknown</td>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>SiLENCER</td>
+        <td>Korean</td>
+        <td>9:30</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>zki</td>
+        <td>Korean</td>
+        <td>10:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>재영(Jae Young)</td>
+        <td>Korean</td>
+        <td>10:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
         <td>[KOR]</td>
         <td>Figaro</td>
-        <td>uninitialised</td>
+        <td>Russian</td>
+        <td>11:00</td>
     </tr>
 	<tr>
-        <td>unknown</td>
+        <td>uninitialised</td>
         <td>[KOR]</td>
-        <td>Yuri80</td>
-        <td>uninitialised</td>
+        <td>Lia</td>
+        <td>Korean</td>
+        <td>11:30</td>
     </tr>
 	<tr>
-        <td>unknown</td>
+        <td>uninitialised</td>
         <td>[KOR]</td>
-        <td>kross</td>
-        <td>uninitialised</td>
+        <td>25King</td>
+        <td>Korean</td>
+        <td>12:00</td>
     </tr>
 	<tr>
-        <td>unknown</td>
+        <td>uninitialised</td>
         <td>[KOR]</td>
-        <td>Viscera</td>
-        <td>uninitialised</td>
+        <td>Blue</td>
+        <td>Korean</td>
+        <td>12:00</td>
     </tr>
 	<tr>
-        <td>unknown</td>
+        <td>uninitialised</td>
         <td>[KOR]</td>
-        <td>ShumaHER</td>
-        <td>uninitialised</td>
+        <td>Yeongho</td>
+        <td>Korean</td>
+        <td>12:00</td>
     </tr>
 	<tr>
-        <td>unknown</td>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>austin</td>
+        <td>Korean</td>
+        <td>12:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Too</td>
+        <td>Korean</td>
+        <td>12:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>퐁퐁(Pong pong)</td>
+        <td>Korean</td>
+        <td>12:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>쑴 (Ssoom)</td>
+        <td>Korean</td>
+        <td>12:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>T.s.훈</td>
+        <td>Korean</td>
+        <td>12:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>매화(Maewha)</td>
+        <td>Korean</td>
+        <td>12:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>pleta</td>
+        <td>Korean</td>
+        <td>12:30</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>M e a</td>
+        <td>English</td>
+        <td>13:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>LEE</td>
+        <td>Korean</td>
+        <td>13:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>paranoi</td>
+        <td>Korean</td>
+        <td>14:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Capt</td>
+        <td>English</td>
+        <td>14:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
         <td>[KOR]</td>
         <td>Kal</td>
+        <td>Korean</td>
+        <td>14:00</td>
+    </tr>
+	<tr>
         <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>KOP</td>
+        <td>Korean</td>
+        <td>15:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>.com™</td>
+        <td>Korean</td>
+        <td>15:00<</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Senchez</td>
+        <td>Russian</td>
+        <td>15:30<</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>=k.o.t=</td>
+        <td>Russian</td>
+        <td>16:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Pacifist</td>
+        <td>Korean</td>
+        <td>16:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Johny</td>
+        <td>Russian</td>
+        <td>16:30</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>ice ice</td>
+        <td>Russian</td>
+        <td>16:30</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Hoper</td>
+        <td>Russian</td>
+        <td>17:30</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Madeiv</td>
+        <td>Russian</td>
+        <td>18:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Rasta</td>
+        <td>Russian</td>
+        <td>18:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Anas</td>
+        <td>English</td>
+        <td>18:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Kastiel</td>
+        <td>Russian</td>
+        <td>19:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>SalazaR</td>
+        <td>Russian</td>
+        <td>19:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Viscera</td>
+        <td>English</td>
+        <td>20:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>XDarinG</td>
+        <td>Russian</td>
+        <td>21:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Monkey</td>
+        <td>English</td>
+        <td>22:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>HelloWorld</td>
+        <td>English</td>
+        <td>23:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Best</td>
+        <td>Korean</td>
+        <td>0:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>John</td>
+        <td>Korean</td>
+        <td>0:30</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>TeeJay</td>
+        <td>English</td>
+        <td>1:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Kitfox</td>
+        <td>English</td>
+        <td>2:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Killer.pH</td>
+        <td>English/Korean</td>
+        <td>3:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>castela</td>
+        <td>Korean</td>
+        <td>5:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Sso</td>
+        <td>Korean</td>
+        <td>6:00</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>떡 (Ddeok)</td>
+        <td>Korean</td>
+        <td>6:30</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>OSD7777</td>
+        <td>Korean</td>
+        <td>7:00</td>
     </tr>
 
 	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>Yuri80</td>
+        <td>Russian</td>
         <td>unknown</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>kross</td>
+        <td>English</td>
+        <td>unknown</td>
+    </tr>
+	<tr>
+        <td>uninitialised</td>
+        <td>[KOR]</td>
+        <td>ShumaHER</td>
+        <td>English</td>
+        <td>unknown</td>
+    </tr>
+
+	<tr>
+        <td>uninitialised</td>
         <td>[Æ]</td>
         <td>Kristina</td>
-        <td>uninitialised</td>
+        <td>English</td>
+        <td>unknown</td>
     </tr>
 </table>
 
